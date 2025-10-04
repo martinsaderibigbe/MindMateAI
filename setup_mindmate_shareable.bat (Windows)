@@ -1,41 +1,23 @@
 @echo off
-:: ================================================
-:: MindMate AI Zero-Setup Installer & Launcher
-:: ================================================
-
-:: Check Python installation
 python --version >nul 2>&1
 if %errorlevel% neq 0 (
-    echo Python is not installed or not in PATH.
-    echo Please install Python 3.8+ from https://www.python.org/downloads/
+    echo Python 3.8+ is required. Install from https://www.python.org/downloads/
     pause
     exit /b
 )
 
-:: Create project folder
 set PROJECT_DIR=%USERPROFILE%\MindMateAI
 if not exist "%PROJECT_DIR%" mkdir "%PROJECT_DIR%"
 cd "%PROJECT_DIR%"
 
-:: Download the fixed chatbot file from GitHub
 echo Downloading MindMate AI...
 powershell -Command "Invoke-WebRequest -Uri 'https://raw.githubusercontent.com/martinsaderibigbe/MindMateAI/refs/heads/main/mindmate_ai_dashboard_shareable.py' -OutFile 'mindmate_ai_dashboard_shareable.py'"
 
-:: Create virtual environment if it doesn't exist
 if not exist "venv" python -m venv venv
-
-:: Activate virtual environment
 call venv\Scripts\activate
-
-:: Upgrade pip
 python -m pip install --upgrade pip
-
-:: Install required packages
 pip install streamlit openai pandas matplotlib plotly wordcloud
 
-:: Run the chatbot
 streamlit run mindmate_ai_dashboard_shareable.py
-
 pause
 
-pause
