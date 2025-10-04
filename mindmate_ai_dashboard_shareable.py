@@ -10,7 +10,7 @@ import plotly.express as px
 
 st.set_page_config(page_title="MindMate AI 🧘", page_icon="💬")
 
-# ================== API KEY PROMPT ==================
+# ================== OPENAI API KEY PROMPT ==================
 if "OPENAI_API_KEY" not in st.session_state:
     st.session_state.OPENAI_API_KEY = None
 
@@ -20,7 +20,7 @@ if not st.session_state.OPENAI_API_KEY:
     if user_key:
         st.session_state.OPENAI_API_KEY = user_key
         st.success("API key saved! You can now use the chatbot.")
-        st.experimental_rerun()
+        st.experimental_refresh()  # Updated for latest Streamlit
 
 openai.api_key = st.session_state.OPENAI_API_KEY
 
@@ -47,7 +47,7 @@ def init_db():
 
 init_db()
 
-# ================== AUTH ==================
+# ================== AUTH FUNCTIONS ==================
 def hash_password(password):
     return hashlib.sha256(password.encode()).hexdigest()
 
@@ -85,7 +85,7 @@ def get_moods(username):
     conn.close()
     return df
 
-# ================== CHAT ==================
+# ================== CHAT FUNCTIONS ==================
 def detect_emotion(message):
     msg = message.lower()
     if any(word in msg for word in ["sad", "depressed", "lonely", "cry"]):
@@ -138,7 +138,7 @@ if not st.session_state.username:
             if verify_login(username, password):
                 st.session_state.username = username
                 st.success(f"Welcome back, {username}! 🌿")
-                st.experimental_rerun()
+                st.experimental_refresh()
             else:
                 st.error("Invalid credentials.")
     
@@ -242,4 +242,5 @@ Give a short (max 60 words), compassionate reflection about how the user is doin
     elif page == "🚪 Logout":
         st.session_state.username = None
         st.success("Logged out successfully.")
-        st.experimental_rerun()
+        st.experimental_refresh()
+
