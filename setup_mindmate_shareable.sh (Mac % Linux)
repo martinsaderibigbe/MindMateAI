@@ -1,38 +1,47 @@
 #!/bin/bash
-# ==============================================
-# MindMate AI Zero-Setup Installer & Launcher
-# For Mac/Linux
-# ==============================================
 
-# Check Python
 if ! command -v python3 &>/dev/null; then
-    echo "Python3 is not installed. Please install Python 3.8+ from https://www.python.org/downloads/"
+    echo "Python 3.8+ is required. Install from https://www.python.org/downloads/"
     exit 1
 fi
 
-# Create project folder
 PROJECT_DIR="$HOME/MindMateAI"
 mkdir -p "$PROJECT_DIR"
 cd "$PROJECT_DIR"
 
-# Download the fixed chatbot file from GitHub
 echo "Downloading MindMate AI..."
-curl -L "https://raw.githubusercontent.com/martinsaderibigbe/MindMateAI/refs/heads/main/mindmate_ai_dashboard_shareable.py" -o mindmate_ai_dashboard_shareable.py
+curl -L "https://raw.githubusercontent.com/YourUsername/MindMateAI/main/mindmate_ai_dashboard_shareable.py" -o mindmate_ai_dashboard_shareable.py
 
-# Create virtual environment
 if [ ! -d "venv" ]; then
     python3 -m venv venv
 fi
 
-# Activate virtual environment
 source venv/bin/activate
-
-# Upgrade pip
 python -m pip install --upgrade pip
-
-# Install required packages
 pip install streamlit openai pandas matplotlib plotly wordcloud
 
-# Run the chatbot
+streamlit run mindmate_ai_dashboard_shareable.py
+#!/bin/bash
+
+if ! command -v python3 &>/dev/null; then
+    echo "Python 3.8+ is required. Install from https://www.python.org/downloads/"
+    exit 1
+fi
+
+PROJECT_DIR="$HOME/MindMateAI"
+mkdir -p "$PROJECT_DIR"
+cd "$PROJECT_DIR"
+
+echo "Downloading MindMate AI..."
+curl -L "https://raw.githubusercontent.com/martinsaderibigbe/MindMateAI/refs/heads/main/mindmate_ai_dashboard_shareable.py" -o mindmate_ai_dashboard_shareable.py
+
+if [ ! -d "venv" ]; then
+    python3 -m venv venv
+fi
+
+source venv/bin/activate
+python -m pip install --upgrade pip
+pip install streamlit openai pandas matplotlib plotly wordcloud
+
 streamlit run mindmate_ai_dashboard_shareable.py
 
