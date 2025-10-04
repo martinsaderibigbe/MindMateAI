@@ -20,9 +20,9 @@ if not st.session_state.OPENAI_API_KEY:
     if user_key:
         st.session_state.OPENAI_API_KEY = user_key
         st.success("API key saved! You can now use the chatbot.")
-        st.rerun()  # Safe, stable rerun
+        st.rerun()
 
-openai.api_key = st.session_state.OPENAI_API_KEY
+client = openai.OpenAI(api_key=st.session_state.OPENAI_API_KEY)
 
 # ================== DATABASE ==================
 def init_db():
@@ -104,14 +104,13 @@ def crisis_check(message):
     return any(word in message.lower() for word in crisis_keywords)
 
 def ai_response(user_message):
-    openai.api_key = st.session_state.OPENAI_API_KEY
     prompt = f"""
 You are MindMate, a kind and supportive wellness chatbot.
 You are NOT a therapist and do not diagnose.
 User: {user_message}
 MindMate:
 """
-    response = openai.ChatCompletion.create(
+    response = client.chat.completions.create(
         model="gpt-4o-mini",
         messages=[
             {"role": "system", "content": "You are an empathetic wellness assistant."},
@@ -120,7 +119,7 @@ MindMate:
         max_tokens=150,
         temperature=0.7,
     )
-    return response.choices[0].message["content"].strip()
+    return response.choices[0].message.content
 
 # ================== MAIN APP ==================
 st.title("💬 MindMate AI – Your Wellness Companion")
@@ -226,7 +225,7 @@ else:
 Analyze emotional changes between {start_date} and {end_date} based on moods: {filtered['mood'].tolist()}.
 Give a short (max 60 words), compassionate reflection about how the user is doing emotionally.
 """
-                reflection = openai.ChatCompletion.create(
+                reflection = client.chat.completions.create(
                     model="gpt-4o-mini",
                     messages=[
                         {"role": "system", "content": "You write kind emotional summaries for users."},
@@ -234,7 +233,7 @@ Give a short (max 60 words), compassionate reflection about how the user is doin
                     ],
                     max_tokens=100,
                     temperature=0.8,
-                ).choices[0].message["content"]
+                ).choices[0].message.content
                 st.info(f"🪷 *{reflection}*")
         else:
             st.info("No mood data yet — start chatting to build insights 🌿")
