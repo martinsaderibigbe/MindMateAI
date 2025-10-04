@@ -22,7 +22,7 @@ if "OPENAI_API_KEY" not in st.session_state or not st.session_state.OPENAI_API_K
 else:
     os.environ["OPENAI_API_KEY"] = st.session_state.OPENAI_API_KEY
 
-client = openai.OpenAI()  # Correct way for SDK v1.x+
+openai.api_key = os.getenv("OPENAI_API_KEY")
 
 # ================== DATABASE ==================
 def init_db():
@@ -99,24 +99,53 @@ def detect_emotion(message):
     else:
         return "neutral"
 
+# ================== CRISIS CHECK & RESOURCE LINKS ==================
 def crisis_check(message):
     crisis_keywords = ["suicide", "kill myself", "die", "want to die", "end it all"]
     return any(word in message.lower() for word in crisis_keywords)
 
+CRISIS_LINKS = {
+    "US": "https://988lifeline.org/",
+    "UK": "https://www.samaritans.org/",
+    "Canada": "https://www.crisisservicescanada.ca/",
+    "International": "https://findahelpline.com/"
+}
+
+def crisis_response():
+    response = (
+        "I'm really concerned about your safety. 💚 You are not alone. "
+        "Please consider reaching out to trained professionals:\n\n"
+        f"- **US**: [988 Lifeline](https://988lifeline.org/)\n"
+        f"- **UK**: [Samaritans](https://www.samaritans.org/)\n"
+        f"- **Canada**: [Crisis Services](https://www.crisisservicescanada.ca/)\n"
+        f"- **International**: [Find a Helpline](https://findahelpline.com/)\n\n"
+        "You deserve help and care immediately. 🌿"
+    )
+    return response
+
+# ================== AI RESPONSE ==================
 def ai_response(user_message):
-    response = client.chat.completions.create(
+    # Ensuring the assistant responds with empathy and support
+    messages = [
+        {"role": "system", "content": (
+            "You are a compassionate, supportive wellness assistant. "
+            "Always respond with empathy, positivity, and helpful guidance. "
+            "Encourage journaling, self-care, and provide gentle emotional support. "
+            "Never give medical advice but can suggest professional help resources."
+        )},
+        {"role": "user", "content": user_message}
+    ]
+    
+    response = openai.ChatCompletion.create(
         model="gpt-4o-mini",
-        messages=[
-            {"role": "system", "content": "You are an empathetic wellness assistant."},
-            {"role": "user", "content": user_message},
-        ],
-        max_tokens=150,
-        temperature=0.7,
+        messages=messages,
+        max_tokens=200,
+        temperature=0.7
     )
     return response.choices[0].message.content
 
 # ================== MAIN APP ==================
-st.title("💬 MindMate AI – Your Wellness Companion")
+st.title("💬 MindMate AI – Your Caring Wellness Companion")
 
 if "username" not in st.session_state:
     st.session_state.username = None
@@ -150,16 +179,13 @@ else:
 
         if user_input:
             if crisis_check(user_input):
-                response = (
-                    "I'm really sorry you're feeling like this. You deserve support and care. "
-                    "If you’re in danger, please reach out for help — In the U.S., call or text **988**."
-                )
+                response = crisis_response()
             else:
                 response = ai_response(user_input)
-
+            
             mood = detect_emotion(user_input)
             add_mood(st.session_state.username, user_input, mood)
-            st.markdown(f"**MindMate:** {response}")
+            st.markdown(f"**MindMate:** {response}", unsafe_allow_html=True)
 
     elif page == "📝 Journal":
         st.header("📝 My Journal")
@@ -219,7 +245,7 @@ else:
 Analyze emotional changes between {start_date} and {end_date} based on moods: {filtered['mood'].tolist()}.
 Give a short (max 60 words), compassionate reflection about how the user is doing emotionally.
 """
-                reflection = client.chat.completions.create(
+                reflection = openai.ChatCompletion.create(
                     model="gpt-4o-mini",
                     messages=[
                         {"role": "system", "content": "You write kind emotional summaries for users."},
