@@ -19,7 +19,7 @@ cd "%PROJECT_DIR%"
 
 :: Download the chatbot file from GitHub
 echo Downloading MindMate AI...
-powershell -Command "Invoke-WebRequest -Uri 'https://raw.githubusercontent.com/YourUsername/MindMateAI/main/mindmate_ai_dashboard_shareable.py' -OutFile 'mindmate_ai_dashboard_shareable.py'"
+powershell -Command "Invoke-WebRequest -Uri 'https://raw.githubusercontent.com/martinsaderibigbe/MindMateAI/refs/heads/main/mindmate_ai_dashboard_shareable.py?token=GHSAT0AAAAAADMPMWDHM3LZF3QHOLZ6TQJO2HBLSZQ'"
 
 :: Create virtual environment if it doesn't exist
 if not exist "venv" python -m venv venv
