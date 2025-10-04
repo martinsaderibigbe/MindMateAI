@@ -1,5 +1,5 @@
 @echo off
-REM Check Python
+:: Check Python version
 python --version >nul 2>&1
 if %errorlevel% neq 0 (
     echo Python 3.8+ is required. Install from https://www.python.org/downloads/
@@ -7,23 +7,25 @@ if %errorlevel% neq 0 (
     exit /b
 )
 
-REM Create project directory
+:: Create project directory
 set PROJECT_DIR=%USERPROFILE%\MindMateAI
 if not exist "%PROJECT_DIR%" mkdir "%PROJECT_DIR%"
 cd "%PROJECT_DIR%"
 
-REM Download the updated Python chatbot
-echo Downloading MindMate AI Python file...
-powershell -Command "Invoke-WebRequest -Uri 'https://raw.githubusercontent.com/martinsaderibigbe/MindMateAI/refs/heads/main/mindmate_ai_dashboard_shareable.py' -OutFile 'mindmate_ai_dashboard_shareable.py'"
+:: Copy Python file manually or from GitHub
+:: Example: powershell -Command "Invoke-WebRequest -Uri 'https://raw.githubusercontent.com/martinsaderibigbe/MindMateAI/refs/heads/main/mindmate_ai_dashboard_shareable.py' -OutFile 'mindmate_ai_offline_web.py'"
 
-REM Setup virtual environment
+:: Create virtual environment if not exist
 if not exist "venv" python -m venv venv
+
+:: Activate virtual environment
 call venv\Scripts\activate
 
-REM Install dependencies
+:: Upgrade pip and install dependencies
 python -m pip install --upgrade pip
-pip install streamlit openai pandas matplotlib plotly wordcloud
+pip install streamlit pandas matplotlib plotly wordcloud transformers torch wikipedia
 
-REM Run the chatbot
-streamlit run mindmate_ai_dashboard_shareable.py
+:: Run the chatbot
+streamlit run mindmate_ai_offline_web.py
 pause
+
