@@ -10,7 +10,7 @@ set PROJECT_DIR=%USERPROFILE%\MindMateAI
 if not exist "%PROJECT_DIR%" mkdir "%PROJECT_DIR%"
 cd "%PROJECT_DIR%"
 
-echo Downloading MindMate AI...
+echo Downloading latest MindMate AI Python file...
 powershell -Command "Invoke-WebRequest -Uri 'https://raw.githubusercontent.com/martinsaderibigbe/MindMateAI/refs/heads/main/mindmate_ai_dashboard_shareable.py' -OutFile 'mindmate_ai_dashboard_shareable.py'"
 
 if not exist "venv" python -m venv venv
@@ -20,4 +20,3 @@ pip install streamlit openai pandas matplotlib plotly wordcloud
 
 streamlit run mindmate_ai_dashboard_shareable.py
 pause
-
