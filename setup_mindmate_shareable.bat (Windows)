@@ -17,9 +17,9 @@ set PROJECT_DIR=%USERPROFILE%\MindMateAI
 if not exist "%PROJECT_DIR%" mkdir "%PROJECT_DIR%"
 cd "%PROJECT_DIR%"
 
-:: Download the chatbot file from GitHub
+:: Download the fixed chatbot file from GitHub
 echo Downloading MindMate AI...
-powershell -Command "Invoke-WebRequest -Uri 'https://raw.githubusercontent.com/martinsaderibigbe/MindMateAI/refs/heads/main/mindmate_ai_dashboard_shareable.py?token=GHSAT0AAAAAADMPMWDHM3LZF3QHOLZ6TQJO2HBLSZQ'"
+powershell -Command "Invoke-WebRequest -Uri 'https://raw.githubusercontent.com/martinsaderibigbe/MindMateAI/refs/heads/main/mindmate_ai_dashboard_shareable.py' -OutFile 'mindmate_ai_dashboard_shareable.py'"
 
 :: Create virtual environment if it doesn't exist
 if not exist "venv" python -m venv venv
@@ -35,5 +35,7 @@ pip install streamlit openai pandas matplotlib plotly wordcloud
 
 :: Run the chatbot
 streamlit run mindmate_ai_dashboard_shareable.py
+
+pause
 
 pause
