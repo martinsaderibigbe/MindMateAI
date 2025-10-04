@@ -1,3 +1,4 @@
+import os
 import streamlit as st
 import openai
 import pandas as pd
@@ -10,19 +11,18 @@ import plotly.express as px
 
 st.set_page_config(page_title="MindMate AI 🧘", page_icon="💬")
 
-# ================== OPENAI API KEY PROMPT ==================
-if "OPENAI_API_KEY" not in st.session_state:
-    st.session_state.OPENAI_API_KEY = None
-
-if not st.session_state.OPENAI_API_KEY:
-    st.info("Please enter your OpenAI API key to use MindMate AI.")
-    user_key = st.text_input("OpenAI API Key", type="password")
+# ================== OPENAI API KEY ==================
+if "OPENAI_API_KEY" not in st.session_state or not st.session_state.OPENAI_API_KEY:
+    user_key = st.text_input("Enter your OpenAI API Key:", type="password")
     if user_key:
         st.session_state.OPENAI_API_KEY = user_key
-        st.success("API key saved! You can now use the chatbot.")
+        os.environ["OPENAI_API_KEY"] = user_key
+        st.success("API key saved! You can now use MindMate AI.")
         st.rerun()
+else:
+    os.environ["OPENAI_API_KEY"] = st.session_state.OPENAI_API_KEY
 
-client = openai.OpenAI(api_key=st.session_state.OPENAI_API_KEY)
+client = openai.OpenAI()  # Correct way for SDK v1.x+
 
 # ================== DATABASE ==================
 def init_db():
@@ -104,17 +104,11 @@ def crisis_check(message):
     return any(word in message.lower() for word in crisis_keywords)
 
 def ai_response(user_message):
-    prompt = f"""
-You are MindMate, a kind and supportive wellness chatbot.
-You are NOT a therapist and do not diagnose.
-User: {user_message}
-MindMate:
-"""
     response = client.chat.completions.create(
         model="gpt-4o-mini",
         messages=[
             {"role": "system", "content": "You are an empathetic wellness assistant."},
-            {"role": "user", "content": prompt},
+            {"role": "user", "content": user_message},
         ],
         max_tokens=150,
         temperature=0.7,
@@ -242,3 +236,4 @@ Give a short (max 60 words), compassionate reflection about how the user is doin
         st.session_state.username = None
         st.success("Logged out successfully.")
         st.rerun()
+
