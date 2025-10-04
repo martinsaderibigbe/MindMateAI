@@ -20,7 +20,7 @@ if not st.session_state.OPENAI_API_KEY:
     if user_key:
         st.session_state.OPENAI_API_KEY = user_key
         st.success("API key saved! You can now use the chatbot.")
-        st.experimental_refresh()  # Updated for latest Streamlit
+        st.rerun()  # Safe, stable rerun
 
 openai.api_key = st.session_state.OPENAI_API_KEY
 
@@ -138,7 +138,7 @@ if not st.session_state.username:
             if verify_login(username, password):
                 st.session_state.username = username
                 st.success(f"Welcome back, {username}! 🌿")
-                st.experimental_refresh()
+                st.rerun()
             else:
                 st.error("Invalid credentials.")
     
@@ -242,5 +242,4 @@ Give a short (max 60 words), compassionate reflection about how the user is doin
     elif page == "🚪 Logout":
         st.session_state.username = None
         st.success("Logged out successfully.")
-        st.experimental_refresh()
-
+        st.rerun()
