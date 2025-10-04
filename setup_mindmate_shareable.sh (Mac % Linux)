@@ -17,7 +17,7 @@ cd "$PROJECT_DIR"
 
 # Download the fixed chatbot file from GitHub
 echo "Downloading MindMate AI..."
-curl -L "https://raw.githubusercontent.com/YourUsername/MindMateAI/main/mindmate_ai_dashboard_shareable.py" -o mindmate_ai_dashboard_shareable.py
+curl -L "https://raw.githubusercontent.com/martinsaderibigbe/MindMateAI/refs/heads/main/mindmate_ai_dashboard_shareable.py" -o mindmate_ai_dashboard_shareable.py
 
 # Create virtual environment
 if [ ! -d "venv" ]; then
